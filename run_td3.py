@@ -103,7 +103,9 @@ def start_td3_simulation(library_name = "SB3"):
 
         td3.visualize_best()
     
-    with open(f'./{library_name}/all_rewards.pkl', 'wb') as f:
+    directory = "." if cfg.directory == None else cfg.directory
+
+    with open(f'{directory}/{library_name}/all_rewards.pkl', 'wb') as f:
         pickle.dump(all_rewards, f)
 
-    plot_rewards(library_name, all_rewards)
+    plot_rewards(library_name, all_rewards, directory)

@@ -1,6 +1,7 @@
 {
+    "directory": ".",
     "save_best": True,
-    "base_dir": "./SB3/sb3-S${algorithm.seed}",
+    "base_dir": "{directory}/SB3/sb3-S${algorithm.seed}",
     "collect_stats": True,
     "plot_agents": False,
     "algorithm": {

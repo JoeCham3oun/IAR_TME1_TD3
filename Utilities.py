@@ -40,18 +40,28 @@ def get_seeds():
     return [1, 42, 123, 234, 345, 456, 567, 678, 789, 890]
 
 
-def plot_rewards(library_name, all_rewards=None):
+def plot_rewards(library_name, all_rewards=None, directory="."):
     if all_rewards == None:
-        with open(f'./{library_name}/all_rewards.pkl', 'rb') as f:
+        with open(f'{directory}/{library_name}/all_rewards.pkl', 'rb') as f:
             all_rewards = pickle.load(f)
     
     stacked_rewards = torch.stack(all_rewards)
     summed_rewards = torch.sum(stacked_rewards, dim=2)
     average_rewards = torch.mean(summed_rewards, dim=0)
+    std_rewards = torch.std(summed_rewards, dim=0)
+    
+    average_rewards_np = average_rewards.numpy()
+    std_rewards_np = std_rewards.numpy()
 
-    plt.plot(average_rewards.numpy(), label='Average Summed Reward Across Seeds')
-    plt.xlabel('Evaluation Episode')
-    plt.ylabel('Average Summed Reward')
-    plt.title(f'Average {library_name} Learning Curve Across Seeds')
+    plt.grid(True)
+
+    plt.plot(average_rewards_np, label='Average Summed Reward Across Seeds')
+    plt.fill_between(range(len(average_rewards_np)), 
+                 average_rewards_np - std_rewards_np, 
+                 average_rewards_np + std_rewards_np, 
+                 alpha=0.2, label='Std Dev')
+    plt.xlabel('Episode')
+    plt.ylabel('Reward')
+    plt.title('Learning Curve: TD3 on LunarLanderContinuous-v2 (10 Seeds) - BBRL using {library_name} hyper-parameters')
     plt.legend()
     plt.show()
